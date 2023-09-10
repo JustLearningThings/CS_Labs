@@ -1,11 +1,26 @@
 ﻿using lab_1;
 
-Cipher caesar = new Cipher(3);
-Console.WriteLine(caesar.Encrypt("hello!)")); // shouldn't return
-Console.WriteLine(caesar.Encrypt("cifrul cezar")); // FLIUXOFHCDU
+int key1 = 0;
+int control = 1;
+string key2 = "";
+string text = "";
 
-caesar = new Cipher(17);
-Console.WriteLine(caesar.Decrypt("SILKVWFITVRKKRTB"));
+Console.WriteLine("Crearea cifrului:");
+Console.Write("Cheia > ");
+key1 = Int32.Parse(Console.ReadLine());
+Console.Write("Cheia 2 (optional) > ");
+key2 = Console.ReadLine();
+Console.Write("Textul >: ");
+text = Console.ReadLine();
 
-Cipher caesarWithSecondKey = new Cipher(3, "cryptography");
-Console.WriteLine(caesarWithSecondKey.Encrypt("cifrul cezar")); // FLIUXOFHCDU
+Cipher Caesar = new Cipher(key1, key2 == "" ? null : key2);
+
+Console.WriteLine("\n1. Criptare");
+Console.WriteLine("2. Decriptare");
+Console.Write(">: ");
+control = Int32.Parse(Console.ReadLine());
+
+if (control == 1)
+    Console.WriteLine("Textul criptat: " + Caesar.Encrypt(text));
+else
+    Console.WriteLine("Textul decriptat: " + Caesar.Decrypt(text));
