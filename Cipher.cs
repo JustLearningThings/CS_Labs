@@ -138,10 +138,4 @@ public class Cipher
 
         return true;
     }
-    private char[]? Permute(char[] chars)
-    {
-
-
-        return chars;
-    }
 }
