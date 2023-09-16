@@ -4,17 +4,17 @@ namespace lab_1;
 
 public class Cipher
 {
-    private Dictionary<char, char> _cryptogram = new();
+    public Dictionary<char, char> _cryptogram = new();
     private Dictionary<char, char> _reversed_cryptogram = new();
     private int _key { get; set; }
     private string? _key2 { get; set; }
 
-    public Cipher(int key, string? key2 = null)
+    public Cipher(int key, string? key2 = null, string? cryptogram = null)
     {
         _key = key;
         _key2 = key2;
 
-        _initCryptogram(key2 != null);
+        _initCryptogram(key2 != null, cryptogram);
     }
 
     public string Encrypt(string text)
@@ -53,8 +53,38 @@ public class Cipher
         return result;
     }
 
-    private void _initCryptogram(bool shouldCreateKey2 = false)
+    private void _initCryptogram(bool shouldCreateKey2 = false, string givenCryptogram = null)
     {
+        if (givenCryptogram != null)
+        {
+            for (int i = 0; i < 26; i++)
+            {
+                char letter = (char)('A' + i);
+                
+                _cryptogram[letter] = givenCryptogram[i];
+                //_reversed_cryptogram[givenCryptogram[i]] = letter;
+            }
+
+            char[] keys = _cryptogram.Keys.ToArray();
+            char[] crp = _shiftArray(_cryptogram.Values.ToArray(), _key);
+
+            for (int i = 0; i < keys.Length; i++)
+            {
+                _cryptogram[keys[i]] = crp[i];
+            }
+
+
+            // create the reverse cryptogram
+            char[] values = _cryptogram.Values.ToArray();
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                _reversed_cryptogram[values[i]] = keys[i];
+            }
+
+            return;
+        }
+
         if (shouldCreateKey2)
         {
             char[] keys = new char[26];
@@ -107,6 +137,14 @@ public class Cipher
                 }
             }
             
+            // shift the cryptogram
+            char[] crp = _shiftArray(_cryptogram.Values.ToArray(), _key);
+
+            for (int i = 0; i < keys.Length; i++)
+            {
+                _cryptogram[keys[i]] = crp[i];
+            }
+
             // create the reverse cryptogram
             values = _cryptogram.Values.ToArray();
 
@@ -137,5 +175,34 @@ public class Cipher
         }
 
         return true;
+    }
+
+    private char[] _shiftArray(char[] arr, int k)
+    {
+        int n = arr.Length;
+        char[] shifted = new char[n];
+
+        for (int i = 0; i < n; i++)
+        {
+            shifted[(i + k) % n] = arr[i];
+        }
+
+        return shifted;
+    }
+
+    public void printAlphabet()
+    {
+        char[] alphabet = _cryptogram.Keys.ToArray();
+        char[] newAlphabet = _cryptogram.Values.ToArray();
+
+        Console.WriteLine("\nAlfabetul initial:");
+        foreach (char letter in alphabet)
+            Console.Write(letter);
+        Console.WriteLine();
+        
+        Console.WriteLine("Alfabetul criptat:");
+        foreach (char letter in newAlphabet)
+            Console.Write(letter);
+        Console.WriteLine("\n");
     }
 }
